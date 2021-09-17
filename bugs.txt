@@ -1,0 +1,3 @@
+classe Tarefa linha 41
+    Valor time_segungo_diferenca esta dando negativo
+    mesmo o evento sendo no futuro.

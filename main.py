@@ -5,7 +5,7 @@ from threading import Thread
 class Evento():
     def __init__(self, link, hora):#paremetro hora é uma string que representa hora '16:30'
         self.link = link
-        self.momento_segundos = self.str_2_momento(hora) #Objeto do tipo time responsavél por armazenar hora do evento
+        self.momento_time = self.str_2_momento(hora) #Objeto do tipo time responsavél por armazenar hora do evento
 
     #Retorna segundos do evento desde a era
     #usa como dia padrão o dia atual
@@ -32,9 +32,19 @@ class Evento():
 
 class Tarefas(Thread):
     def __init__(self, evento):
+        super().__init__()
         self.evento = evento
 
     def run(self) -> None:
+        timer_segundo_atual = int(time.time())
+        timer_segundo_evento = int(self.evento.momento_time)
+        timer_segundos_diferenca =  timer_segundo_evento - timer_segundo_atual
+
+        # Levanta exeção caso o valor da diferenca do tempo do evento e
+        # o tempo atual seja menor que 0
+
+        if timer_segundos_diferenca < 0:
+            raise TypeError('Evento com tempo já passado')
 
         return super().run()
 
