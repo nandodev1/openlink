@@ -19,6 +19,8 @@ class Open_link(Thread):
         app = QApplication(sys.argv)
         w = QWidget()
         w.resize(600,300)
+        w.setMinimumSize(600,300)
+        w.setMaximumSize(600,300)
         w.setWindowTitle('OPEN LINK')
         label = QLabel(w)
         label.setText("<=== OPEN LINK ===>")
@@ -30,6 +32,8 @@ class Open_link(Thread):
         self.area_texto.setReadOnly(True)
         self.area_texto.resize(556,220)
         self.area_texto.show()
+        self.area_texto.setFontFamily('Times New Roman')
+        self.area_texto.setFontPointSize(12)
 
         btn1 = QPushButton(w)
         btn1.setText('INICIAR')
@@ -55,7 +59,6 @@ class Open_link(Thread):
         
         w.show()
         sys.exit(app.exec_())
-        breakpoint
 
     def adiciona_mensagem(self, mensagem):
         os.environ['MENS'] += mensagem + '\n'
@@ -63,17 +66,20 @@ class Open_link(Thread):
 
     def run(self):
         if self.link_exibicao == None:
-            self.link_exibicao = main.Links_exibicao()
+            self.link_exibicao = main.Links_exibicao(self)
             self.adiciona_mensagem('Programa iniciado.')
             self.link_exibicao.iniciar()
             mensagens = self.link_exibicao.get_status()
             self.adiciona_mensagem(mensagens)
         else:
+            self.linpar()
             self.adiciona_mensagem('Seu programa já esta iniciado.')
             
     def parar(self):
         self.linpar()
         if self.link_exibicao != None:
+            for t in self.link_exibicao.tarefas:
+                t.rodando = False
             self.link_exibicao = None
             self.adiciona_mensagem('Programa parado.')
         else:

@@ -51,6 +51,7 @@ class Evento():
 class Tarefas(Thread):
     def __init__(self, evento):
         super().__init__()
+        self.rodando = True
         self.evento = evento
         timer_segundo_atual = int(time.time())
         timer_segundo_evento = int(self.evento.momento_time)
@@ -66,23 +67,23 @@ class Tarefas(Thread):
         # o tempo atual seja menor que 0
 
 
-        while True:
+        while self.rodando:
             tmp_atual = time.gmtime()
             if tmp_atual.tm_hour - 3 == self.evento.hora_minuto[Evento.HORA]:
                 if tmp_atual.tm_min == self.evento.hora_minuto[Evento.MIN]:
                     break
             time.sleep(.5)
-        webbrowser.open_new_tab(self.evento.link)
+        if self.rodando:
+            webbrowser.open_new_tab(self.evento.link)
         self.tarefa_concluida = True
-        print('Concluida')
         return super().run()
-
 
 class Links_exibicao():
 
-    def __init__(self):
+    def __init__(self, app):
         self.tarefas = []# Todas tarefas adicionadas, armazenada em objetos Tarefas
         self.mensagens = ''
+        self.app = app
 
     def get_status(self):
         for t in self.tarefas:
@@ -112,7 +113,7 @@ class Links_exibicao():
                 tarefa = Tarefas(evento=evento)
                 self.adiciona_tarefa(tarefa=tarefa)
             except:
-                os.environ['MENS'] += link + ' - ' + instante + ' -> já passou.\n'
+                os.environ['MENS'] += link + ' - ' + instante + ' -> Hora já passou.\n'
                 continue
 
         for tarefa in self.tarefas:
